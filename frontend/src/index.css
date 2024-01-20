@@ -1,0 +1,69 @@
+html,
+body {
+    overflow: hidden;
+}
+
+.chatBox {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    width: 100vw;
+    height: 91vh;
+    padding: 15px;
+    background-color: rgb(209, 219, 255);
+    /* background-color: rgb(254, 236, 255); */
+}
+
+.navbar {
+    display: flex;
+
+}
+
+.messages {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+
+}
+
+.hideScroll {
+    overflow-y: scroll;
+    /* scrollbar-width: none; */
+    scroll-behavior: smooth;
+    
+}
+
+::-webkit-scrollbar {
+   display: none;
+}
+
+.chatBg {
+    background-image: url("https://s-media-cache-ak0.pinimg.com/originals/cf/14/0d/cf140dac517f37fc801b6b91aaf76fea.png");
+    background-size: cover;
+}
+
+.time {
+    font-size: 10px;
+    position: relative;
+    top: 7px;
+    left: 7px;
+    color: rgb(65, 63, 63);
+}
+
+.timeInChat {
+    margin-left: auto;
+    font-size: small;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: rgb(81, 81, 81);
+    
+}
+
+.badge {
+    position: relative;
+    right: 13px;
+    bottom: 10px;
+    border-radius: 50% !important;
+    font-size: 10px !important;
+}
+
+

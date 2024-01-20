@@ -1,0 +1,22 @@
+.App {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background-image: url('./Images/background.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.titleBox {
+    background-color: rgb(209, 234, 255);
+    /* opacity: 0.5; */
+    /* filter: blur('20px'); */
+}
+.titleBox::before {
+    content: "";
+    width: 100%;
+    height: 100%;    
+    z-index: -1;
+    background-color: blue;
+    opacity: 0.5;
+}

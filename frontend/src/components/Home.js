@@ -30,13 +30,15 @@ const Home = () => {
         <Box
           d="flex"
           justifyContent="center"
-          p="10px 140px"
+          p="10px 14px"
+          width={{base: "100%", md: "500px", lg: "700px"}}
           m="20px 0 0px 0"
+          textAlign='center'
           borderRadius="lg"
           borderWidth="1px"
           className="titleBox"
         >
-          <Text fontSize="2xl" px={5}>Talk-A-Tive</Text>
+          <Text fontSize={{ base: "2xl", md: "2xl", lg: "3xl" }} px={5}>Talk-A-Tive</Text>
         </Box>
 
         <Box
@@ -45,14 +47,15 @@ const Home = () => {
           w="35vw"
           p="10px 20px"
           m="10px 0 0px 0"
+          width={{base: "100%", md: "500px", lg: "700px"}}
           borderRadius="lg"
           borderWidth="1px"
           className="titleBox"
         >
           <Tabs variant="soft-rounded" colorScheme="blue">
             <TabList>
-              <Tab width="50%">Login</Tab>
-              <Tab width="50%">Sign Up</Tab>
+              <Tab width="50%"  fontSize={{ base: "15px", md: "16px", lg: "20px" }}>Login</Tab>
+              <Tab width="50%" fontSize={{ base: "15px", md: "16px", lg: "20px" }}>Sign Up</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>

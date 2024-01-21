@@ -8,6 +8,7 @@ import {
   Input,
   InputRightElement,
   useToast,
+  Text,
 } from "@chakra-ui/react";
 import { Stack, HStack, VStack } from "@chakra-ui/react";
 import axios from "axios";
@@ -97,8 +98,9 @@ const Login = () => {
       </FormControl> */}
 
       <FormControl>
-        <FormLabel>Email: </FormLabel>
+        <FormLabel fontSize="15px" >Email: </FormLabel>
         <Input
+          size='sm'
           type="email"
           placeholder="Enter your email"
           style={{ border: "1px solid black" }}
@@ -109,9 +111,10 @@ const Login = () => {
       </FormControl>
 
       <FormControl>
-        <FormLabel>Password: </FormLabel>
+        <FormLabel fontSize="15px">Password: </FormLabel>
         <InputGroup>
           <Input
+            size='sm'
             type={show ? "text" : "password"}
             placeholder="Enter your password"
             style={{ border: "1px solid black" }}
@@ -119,15 +122,16 @@ const Login = () => {
               setPassword(e.target.value);
             }}
           />
-          <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "hide" : "show"}
+           <InputRightElement width="3rem" className="show">
+            <Button size="xs" onClick={handleClick}>
+              <Text fontSize='xs'>{show ? "hide" : "show"}</Text>
             </Button>
           </InputRightElement>
         </InputGroup>
       </FormControl>
 
       <Button
+        size='sm'
         colorScheme="blue"
         width="100%"
         style={{ marginTop: "20px" }}
@@ -138,6 +142,7 @@ const Login = () => {
       </Button>
 
       <Button
+        size='sm'
         variant="solid"
         colorScheme="red"
         width="100%"

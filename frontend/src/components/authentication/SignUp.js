@@ -8,12 +8,15 @@ import {
   InputRightElement,
   useToast,
   Text,
+  Box,
 } from "@chakra-ui/react";
 import { Stack, HStack, VStack } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { ChatState } from "../../context/ChatProvider";
 
 const SignUp = () => {
+  const { setUser } = ChatState();
   const [show, setShow] = useState(false);
   const [show2, setShow2] = useState(false);
   const [name, setName] = useState();
@@ -119,6 +122,10 @@ const SignUp = () => {
         { name, email, password, pic },
         config
       );
+
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      setUser(JSON.parse(localStorage.getItem("userInfo")));
+      
       toast({
         title: "Registration sucessful!",
         status: "success",
@@ -127,7 +134,6 @@ const SignUp = () => {
         position: "bottom",
       });
 
-      localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
       navigate("/chats");
     } catch (error) {
@@ -145,7 +151,7 @@ const SignUp = () => {
   return (
     <VStack spacing="5px">
       <FormControl>
-        <FormLabel fontSize='15px'>Name: </FormLabel>
+        <FormLabel fontSize="15px">Name: </FormLabel>
         <Input
           size="sm"
           placeholder="Enter your name"
@@ -157,9 +163,9 @@ const SignUp = () => {
       </FormControl>
 
       <FormControl>
-        <FormLabel fontSize='15px'>Email: </FormLabel>
+        <FormLabel fontSize="15px">Email: </FormLabel>
         <Input
-          size='sm'
+          size="sm"
           type="email"
           placeholder="Enter your email"
           style={{ border: "1px solid black" }}
@@ -169,50 +175,63 @@ const SignUp = () => {
         />
       </FormControl>
 
-      <FormControl>
-        <FormLabel fontSize='15px'>Password: </FormLabel>
-        <InputGroup>
-          <Input
-            size='sm'
-            type={show ? "text" : "password"}
-            placeholder="Enter your password"
-            style={{ border: "1px solid black" }}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-          <InputRightElement width="3rem" className="show">
-            <Button size="xs" onClick={handleClick}>
-              <Text fontSize='xs'>{show ? "hide" : "show"}</Text>
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
+      <Box
+        display="flex"
+        flexDir={{ base: "column", md: "column", lg: "row" }}
+        width={{ base: "100%", md: "100%", lg: "700px" }}
+        justifyContent="space-between"
+      >
+        <FormControl
+          width={{ lg: "40%", md: "100%", base: "100%" }}
+          marginLeft={{ base: 0, md: 0, lg: 10 }}
+        >
+          <FormLabel fontSize="15px">Password: </FormLabel>
+          <InputGroup>
+            <Input
+              size="sm"
+              type={show ? "text" : "password"}
+              placeholder="Enter your password"
+              style={{ border: "1px solid black" }}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            />
+            <InputRightElement width="3rem" className="show">
+              <Button size="xs" onClick={handleClick}>
+                <Text fontSize="xs">{show ? "hide" : "show"}</Text>
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+        </FormControl>
+
+        <FormControl
+          width={{ lg: "40%", md: "100%", base: "100%" }}
+          marginRight={{ base: 0, md: 0, lg: 10 }}
+        >
+          <FormLabel fontSize="15px">Confirm Password: </FormLabel>
+          <InputGroup>
+            <Input
+              size="sm"
+              type={show2 ? "text" : "password"}
+              placeholder="Enter your password"
+              style={{ border: "1px solid black" }}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+              }}
+            />
+            <InputRightElement width="3rem" className="show">
+              <Button size="xs" onClick={handleClick2}>
+                <Text fontSize="xs">{show2 ? "hide" : "show"}</Text>
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+        </FormControl>
+      </Box>
 
       <FormControl>
-        <FormLabel fontSize='15px'>Confirm Password: </FormLabel>
-        <InputGroup>
-          <Input
-            size='sm'
-            type={show2 ? "text" : "password"}
-            placeholder="Enter your password"
-            style={{ border: "1px solid black" }}
-            onChange={(e) => {
-              setConfirmPassword(e.target.value);
-            }}
-          />
-          <InputRightElement width="3rem" className="show">
-            <Button size="xs" onClick={handleClick}>
-              <Text fontSize='xs'>{show ? "hide" : "show"}</Text>
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-
-      <FormControl>
-        <FormLabel fontSize='15px'>Upload your picture: </FormLabel>
+        <FormLabel fontSize="15px">Upload your picture: </FormLabel>
         <Input
-          size='sm'
+          size="sm"
           type="file"
           accept="image/*"
           style={{ border: "1px solid black" }}
@@ -222,7 +241,7 @@ const SignUp = () => {
         />
       </FormControl>
       <Button
-        size='sm'
+        size="sm"
         colorScheme="blue"
         width="100%"
         style={{ marginTop: "10px" }}

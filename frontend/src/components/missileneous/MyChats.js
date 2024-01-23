@@ -9,16 +9,13 @@ import GroupChatModal from "./GroupChatModal";
 import groupLogo from "../../Images/groupChat.png";
 
 const MyChats = ({ fetchAgain, setFetchAgain }) => {
-  const [loggedUser, setLoggedUser] = useState();
-  const [count, setCount] = useState(0);
+  // const [loggedUser, setLoggedUser] = useState();
   const {
     selectedChat,
     setSelectedChat,
     chat,
     setChat,
     user,
-    notification,
-    setNotification,
   } = ChatState();
   const toast = useToast();
 
@@ -50,46 +47,10 @@ const MyChats = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
-  const handleCount = async (chat, cnt) => {
-    if (!chat) return;
 
-    try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-
-      const { data } = await axios.put(
-        "/api/chat/count/",
-        { chatId: chat._id, count: cnt },
-        config
-      );
-
-      // setFetchAgain(!fetchAgain);
-    } catch (error) {
-      toast({
-        title: "Error while setting count!",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-        position: "bottom",
-      });
-    }
-  };
-
-  const getCount = (chat) => {
-    let cnt = 0;
-    for (let i = 0; i < notification.length; i++) {
-      if (notification[i].chat == chat) {
-        cnt = cnt + 1;
-      }
-    }
-    handleCount(chat, cnt);
-  };
 
   useEffect(() => {
-    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
+    // setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
   }, [fetchAgain]);
 
@@ -159,7 +120,7 @@ const MyChats = ({ fetchAgain, setFetchAgain }) => {
                   src={
                     c.isGroupChat
                       ? c.dp
-                      : getSenderFull(loggedUser, c.users).pic
+                      : getSenderFull(user, c.users).pic
                   }
                   size="md"
                   cursor="pointer"
@@ -167,7 +128,7 @@ const MyChats = ({ fetchAgain, setFetchAgain }) => {
                 <Box>
                   <Text marginLeft={3} as="samp">
                     {!c.isGroupChat
-                      ? getSender(loggedUser, c.users)
+                      ? getSender(user, c.users)
                       : c.chatName}
                   </Text>
                   <Text marginLeft={3} fontSize={14} fontFamily="revert">

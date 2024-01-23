@@ -55,6 +55,7 @@ const SideDrawer = () => {
   const navigate = useNavigate();
 
   const LogOutHandler = () => {
+    setSelectedChat("");
     localStorage.removeItem("userInfo");
     navigate("/");
   };
@@ -157,7 +158,7 @@ const SideDrawer = () => {
           <Menu>
             <MenuButton p={1}>
               <BellIcon fontSize="2xl" m={1} />
-              <Badge color='white' bg='red' className="badge">{notification.length}</Badge>
+              { notification.length>0 && <Badge className="badge">{notification.length}</Badge>}
             </MenuButton>
 
             <MenuList pl={3}>
@@ -212,7 +213,7 @@ const SideDrawer = () => {
                     setSearch(e.target.value);
                   }}
                 />
-                <Button onClick={handleSearch}>GO</Button>
+                <Button onKeyDown={handleSearch} onClick={handleSearch}>GO</Button>
               </Box>
 
               {loading ? (

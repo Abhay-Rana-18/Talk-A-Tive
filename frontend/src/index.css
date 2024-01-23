@@ -64,6 +64,14 @@ body {
     bottom: 10px;
     border-radius: 50% !important;
     font-size: 10px !important;
+    background-color: rgb(245, 101, 101) !important;
+    color: white !important;
+    padding: 1px 6px !important;
+}
+
+.passBox {
+    display: flex;
+    justify-content: space-between;
 }
 
 

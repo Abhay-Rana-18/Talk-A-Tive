@@ -22,6 +22,7 @@ import animationData from "../Animations/typing.json";
 
 // socket.io
 import { io } from "socket.io-client";
+import ProfileModal2 from "./missileneous/ProfileModal2";
 
 const ENDPOINT = "http://localhost:3000";
 var socket, selectedChatCompare;
@@ -241,7 +242,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             {!selectedChat.isGroupChat ? (
               <>
                 {getSender(user, selectedChat.users)}
-                <ProfileModal user={getSenderFull(user, selectedChat.users)} />
+                <ProfileModal2 user={getSenderFull(user, selectedChat.users)} />
               </>
             ) : (
               <>
@@ -296,6 +297,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               )}
 
               <Input
+                position='sticky'
                 bg="white"
                 placeholder="Enter a message..."
                 onChange={typingHandler}

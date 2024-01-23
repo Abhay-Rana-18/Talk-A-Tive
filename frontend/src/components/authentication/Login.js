@@ -13,6 +13,7 @@ import {
 import { Stack, HStack, VStack } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { ChatState } from "../../context/ChatProvider";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const Login = () => {
   const [confirmPassword, setConfirmPassword] = useState();
   const [pic, setPic] = useState();
   const [loading, setLoading] = useState(false);
+  const {setUser} = ChatState();
 
   // a alert of chakra-ui
   const toast = useToast();
@@ -58,6 +60,8 @@ const Login = () => {
         { email, password },
         config
       );
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      setUser(JSON.parse(localStorage.getItem("userInfo")));
       if (data) {
         toast({
           title: "Login sucessful!",
@@ -68,9 +72,8 @@ const Login = () => {
         });
       }
 
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      setLoading(false);
       navigate("/chats");
+      setLoading(false);
     } catch (error) {
       toast({
         title: "Login failed",
@@ -80,7 +83,7 @@ const Login = () => {
         position: "bottom",
       });
       setLoading(false);
-      navigate("/chats")
+      navigate("/chats");
     }
   };
 
@@ -98,10 +101,11 @@ const Login = () => {
       </FormControl> */}
 
       <FormControl>
-        <FormLabel fontSize="15px" >Email: </FormLabel>
+        <FormLabel fontSize="15px">Email: </FormLabel>
         <Input
-          size='sm'
+          size="sm"
           type="email"
+          value={email}
           placeholder="Enter your email"
           style={{ border: "1px solid black" }}
           onChange={(e) => {
@@ -114,24 +118,25 @@ const Login = () => {
         <FormLabel fontSize="15px">Password: </FormLabel>
         <InputGroup>
           <Input
-            size='sm'
+            size="sm"
             type={show ? "text" : "password"}
+            value={password}
             placeholder="Enter your password"
             style={{ border: "1px solid black" }}
             onChange={(e) => {
               setPassword(e.target.value);
             }}
           />
-           <InputRightElement width="3rem" className="show">
+          <InputRightElement width="3rem" className="show">
             <Button size="xs" onClick={handleClick}>
-              <Text fontSize='xs'>{show ? "hide" : "show"}</Text>
+              <Text fontSize="xs">{show ? "hide" : "show"}</Text>
             </Button>
           </InputRightElement>
         </InputGroup>
       </FormControl>
 
       <Button
-        size='sm'
+        size="sm"
         colorScheme="blue"
         width="100%"
         style={{ marginTop: "20px" }}
@@ -142,7 +147,7 @@ const Login = () => {
       </Button>
 
       <Button
-        size='sm'
+        size="sm"
         variant="solid"
         colorScheme="red"
         width="100%"
@@ -150,7 +155,6 @@ const Login = () => {
         onClick={() => {
           setEmail("guest@example.com");
           setPassword("12345");
-          submitHandler();
         }}
       >
         Login with guest credentials

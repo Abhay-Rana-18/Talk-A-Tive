@@ -5,7 +5,9 @@ import {
   Box,
   FormControl,
   IconButton,
+  Image,
   Input,
+  InputGroup,
   Spinner,
   Text,
   Toast,
@@ -17,6 +19,8 @@ import ProfileModal from "./missileneous/ProfileModal";
 import UpdateGroupChatModel from "./missileneous/UpdateGroupChatModel";
 import axios from "axios";
 import ScrollableChat from "./ScrollableChat";
+import msgImage from "../Images/send-message.png";
+import msgAudio  from "../Images/msg.mp3";
 
 import animationData from "../Animations/typing.json";
 
@@ -140,7 +144,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         { chatId: chat._id, count: cnt },
         config
       );
-      
+
       // setFetchAgain(!fetchAgain);
     } catch (error) {
       toast({
@@ -153,13 +157,24 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
-  const sendMessage = async (e) => {
+  const onEnter = (e) => {
+    var screenWidth = window.screen.width;
+    if (e.key == "Enter") {
+      sendMessage();
+    }
+  }
+
+  const sendMessage = async () => {
+    let audio = new Audio(msgAudio);
     const now = new Date();
     let hour = now.getHours();
-    
+    if (hour == 0) {
+      hour = 12;
+    }
+
     let min = now.getMinutes();
 
-    if (e.key === "Enter" && newMessage) {
+    if (newMessage) {
       socket.emit("stop typping", selectedChat._id);
       try {
         setNewMessage("");
@@ -170,7 +185,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           },
         };
         let a = "pm";
-        if (hour<12) {
+        if (hour < 12) {
           a = "am";
         }
         const { data } = await axios.post(
@@ -178,12 +193,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           {
             content: newMessage,
             chatId: selectedChat._id,
-            time: hour>=12 ? `${hour-12}:${min} ${a}` : `${hour}:${min} ${a}`
+            time:
+              hour > 12 ? `${hour - 12}:${min} ${a}` : `${hour}:${min} ${a}`,
           },
           config
         );
-        
+
         socket.emit("new message", data);
+        audio.play();
         setMessages([...messages, data]);
       } catch (error) {
         toast({
@@ -255,12 +272,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               </>
             )}
           </Text>
-          
+
           <Box
             display="flex"
             flexDir="column"
             justifyContent="flex-end"
-            p={3}
+            p={{ base: 0, md: 3, lg: 3 }}
             // bg="rgb(232, 232, 232)"
             className="chatBg"
             w="100%"
@@ -283,7 +300,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               </div>
             )}
 
-            <FormControl onKeyDown={sendMessage} isRequired mt={3}>
+            <FormControl isRequired onKeyDown={onEnter} mt={3}>
               {isTyping ? (
                 <div>
                   <Lottie
@@ -295,14 +312,20 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               ) : (
                 <></>
               )}
-
-              <Input
-                position='sticky'
-                bg="white"
-                placeholder="Enter a message..."
-                onChange={typingHandler}
-                value={newMessage}
-              />
+              <InputGroup>
+                <Input
+                  bg="white"
+                  placeholder="Enter a message..."
+                  mx={{ base: 1, md: 0, lg: 0 }}
+                  mb={{ base: 2, md: 0, lg: 0 }}
+                  width={{ base: "95%", md: "100%", lg: "100%" }}
+                  onChange={typingHandler}
+                  value={newMessage}
+                />
+                <Box bg="white" marginLeft={{base: "-2px", md: "5px", lg: "5px"}} marginRight={{base: 1, md: 0}} paddingX={2} height={{base: "2.4rem", md: "auto", lg: "auto"}} onClick={sendMessage}>
+                  <Image src={msgImage} alt="->" className="msgImage" />
+                </Box>
+              </InputGroup>
             </FormControl>
           </Box>
         </>

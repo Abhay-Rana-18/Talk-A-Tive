@@ -9,7 +9,7 @@ body {
     flex-direction: row;
     width: 100vw;
     height: 91vh;
-    padding: 15px;
+    padding: 5px;
     background-color: rgb(209, 219, 255);
     /* background-color: rgb(254, 236, 255); */
 }
@@ -74,4 +74,13 @@ body {
     justify-content: space-between;
 }
 
+.msgBox {
+    background: white;
+    border-radius: 15px;
+}
+.msgImage {
+    margin-top: 0.7rem;
+    width: 1.5rem;
+    height: 1rem;
+}
 

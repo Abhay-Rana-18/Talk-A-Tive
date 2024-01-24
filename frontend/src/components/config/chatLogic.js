@@ -29,7 +29,7 @@ export const isSameSenderMargin = (message, m, i, userId, selectedChat) => {
     message[i + 1].sender._id === m.sender._id &&
     message[i].sender._id !== userId
   ) {
-    return 25;
+    return 15;
   } else if (
     i < message.length - 1 &&
     message[i + 1].sender._id !== m.sender._id &&
@@ -42,13 +42,13 @@ export const isSameSenderMargin = (message, m, i, userId, selectedChat) => {
     message[i + 1].sender._id !== m.sender._id &&
     message[i].sender._id !== userId
   ) {
-    return 25;
+    return 15;
   }
   else if(i==message.length-1 && message[i].sender._id!==userId && selectedChat.isGroupChat) {
     return 0;
   }
   else if(i==message.length-1 && message[i].sender._id!==userId) {
-    return 25;
+    return 15;
   }
   else {
     return "auto";

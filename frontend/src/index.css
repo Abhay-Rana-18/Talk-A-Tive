@@ -43,11 +43,20 @@ body {
 }
 
 .time {
+    margin-left: auto !important;
     font-size: 10px;
-    position: relative;
-    top: 7px;
-    left: 7px;
     color: rgb(65, 63, 63);
+    position: relative;
+    left: 11px;
+    bottom: 4px;
+}
+
+.smTime {
+    font-size: 10px;
+    color: rgb(65, 63, 63);
+    position: relative;
+    left: 7px;
+    top: 7px;
 }
 
 .timeInChat {

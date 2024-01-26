@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Chat = require("../models/chatModel");
 const User = require("../models/UserModel");
+const { default: mongoose } = require("mongoose");
 
 const accessChat = asyncHandler(async (req, res) => {
   const { userID } = req.body;
@@ -197,6 +198,23 @@ const removeFromGroup = asyncHandler(async (req, res) => {
   }
 });
 
+const findChat = asyncHandler(async (req, res) => {
+  let {chatId} = req.body;
+
+  if (!chatId) {
+    return res.status(400).json({ error: "Empty chatID" });
+  }
+
+  const chat = await Chat.findById(chatId);
+
+  if (!chat) {
+    return res.status(404).json({ error: "Chat not found" });
+  }
+
+  return res.json(chat);
+});
+
+
 // No. of unread messages
 const changeCount = asyncHandler(async (req, res) => {
   try {
@@ -232,4 +250,5 @@ module.exports = {
   removeFromGroup,
   updateImageGroup,
   changeCount,
+  findChat,
 };

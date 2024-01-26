@@ -18,6 +18,13 @@ const userSchema = mongoose.Schema(
       type: String,
       default: "https://www.cascadeblindsni.com/wp-content/uploads/2018/11/user-circle-solid.jpg"
     },
+    notification: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Message",
+        unique: true
+      },
+    ],
   },
   {
     timestamps: true,

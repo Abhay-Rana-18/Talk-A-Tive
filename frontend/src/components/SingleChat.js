@@ -20,7 +20,7 @@ import UpdateGroupChatModel from "./missileneous/UpdateGroupChatModel";
 import axios from "axios";
 import ScrollableChat from "./ScrollableChat";
 import msgImage from "../Images/send-message.png";
-import msgAudio  from "../Images/msg.mp3";
+import msgAudio from "../Images/msg.mp3";
 
 import animationData from "../Animations/typing.json";
 
@@ -28,7 +28,7 @@ import animationData from "../Animations/typing.json";
 import { io } from "socket.io-client";
 import ProfileModal2 from "./missileneous/ProfileModal2";
 
-const ENDPOINT = "http://localhost:3000";
+const ENDPOINT = "192.168.43.143:3000";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -106,28 +106,70 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
-  console.log(notification);
+  const addNotification = async (noti) => {
+    if (!noti) {
+      return;
+    }
+
+    try {
+      console.log(noti);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        `/api/user/notiAdd`,
+        { msgId: noti._id },
+        config
+      );
+    } catch (error) {
+      toast({
+        title: "Error while add notification!",
+        description: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+  };
 
   useEffect(() => {
-    socket.on("message received", (newMessageReceived) => {
+    const handleNewMessage = (newMessageReceived) => {
       if (
         !selectedChatCompare ||
-        selectedChatCompare._id != newMessageReceived.chat._id
+        selectedChatCompare._id !== newMessageReceived.chat._id
       ) {
-        // give notification
-        if (!notification.includes(newMessageReceived)) {
+        // Check if the notification already exists
+        if (!notification.some((msg) => msg._id === newMessageReceived._id)) {
           setNotification([...notification, newMessageReceived]);
-          handleCount(
-            newMessageReceived.chat,
-            newMessageReceived.chat.count + 1
-          );
+          addNotification(newMessageReceived);
           setFetchAgain(!fetchAgain);
         }
       } else {
         setMessages([...messages, newMessageReceived]);
       }
-    });
-  });
+    };
+
+    // Subscribe to the socket event
+    socket.on("message received", handleNewMessage);
+
+    // Cleanup function to unsubscribe when the component unmounts
+    return () => {
+      socket.off("message received", handleNewMessage);
+    };
+
+    // Add dependencies to control when the effect should run
+  }, [
+    selectedChatCompare,
+    notification,
+    messages,
+    fetchAgain,
+    addNotification,
+    socket,
+  ]);
 
   const handleCount = async (chat, cnt) => {
     if (!chat) return;
@@ -162,7 +204,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     if (e.key == "Enter") {
       sendMessage();
     }
-  }
+  };
 
   const sendMessage = async () => {
     let audio = new Audio(msgAudio);
@@ -194,7 +236,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             content: newMessage,
             chatId: selectedChat._id,
             time:
-              hour > 12 ? `${hour - 12}:${min} ${a}` : `${hour}:${min} ${a}`,
+              hour > 12
+                ? `${hour - 12}:${min < 10 ? "0" + min : min} ${a}`
+                : `${hour}:${min} ${a}`,
           },
           config
         );
@@ -322,7 +366,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   onChange={typingHandler}
                   value={newMessage}
                 />
-                <Box bg="white" marginLeft={{base: "-2px", md: "5px", lg: "5px"}} marginRight={{base: 1, md: 0}} paddingX={2} height={{base: "2.4rem", md: "auto", lg: "auto"}} onClick={sendMessage}>
+                <Box
+                  bg="white"
+                  marginLeft={{ base: "-2px", md: "5px", lg: "5px" }}
+                  marginRight={{ base: 1, md: 0 }}
+                  paddingX={2}
+                  height={{ base: "2.4rem", md: "auto", lg: "auto" }}
+                  onClick={sendMessage}
+                >
                   <Image src={msgImage} alt="->" className="msgImage" />
                 </Box>
               </InputGroup>

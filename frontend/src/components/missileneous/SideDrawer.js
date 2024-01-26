@@ -26,7 +26,7 @@ import {
 // import Badge from "@mui/material/Badge";
 
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChatState } from "../../context/ChatProvider";
 import ProfileModal from "./ProfileModal";
 import { useNavigate } from "react-router-dom";
@@ -42,6 +42,7 @@ const SideDrawer = () => {
   const [loadingChats, setLoadingChats] = useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [nChat, setNChat] = useState();
 
   const {
     user,
@@ -53,6 +54,73 @@ const SideDrawer = () => {
     setNotification,
   } = ChatState();
   const navigate = useNavigate();
+
+  
+  useEffect(() => {
+    getNotifications();
+  }, []);
+
+  const getNotifications = async() => {
+    try {
+      setLoading(true);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const {data}  = await axios.get(
+        `/api/user/notiGet`,
+        config
+      );
+      setLoading(false);
+      console.log(data);
+      setNotification(data);
+
+    } catch (error) {
+      toast({
+        title: "Error while getting notification!",
+        description: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+  };
+
+  const removeNotification = async(noti) => {
+    if (!noti) {
+      return;
+    }
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        `/api/user/notiRemove`,
+        {msgId: noti._id},
+        config
+      );
+
+    } catch (error) {
+      toast({
+        title: "Error while add notification!",
+        description: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+  }
+
+ 
+  
 
   const LogOutHandler = () => {
     setSelectedChat("");
@@ -169,6 +237,7 @@ const SideDrawer = () => {
                   onClick={() => {
                     setSelectedChat(noti.chat);
                     setNotification(notification.filter((n) => n !== noti));
+                    removeNotification(noti);
                   }}
                 >
                   {noti.chat.isGroupChat
@@ -219,12 +288,12 @@ const SideDrawer = () => {
               {loading ? (
                 <ChatLoading />
               ) : (
-                searchResult?.map((user) => (
+                searchResult?.map((usr) => (
                   <UserListItem
-                    key={user._id}
-                    user={user}
+                    key={usr._id}
+                    user={usr}
                     handleFunction={() => {
-                      accessChat(user._id);
+                      accessChat(usr._id);
                       onClose();
                     }}
                   />

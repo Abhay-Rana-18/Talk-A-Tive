@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const generateToken = require("../config/generateToken");
 const User = require("../models/UserModel");
+const Message = require("../models/messageModel");
 
 const registerUser = async (req, res) => {
   const { name, email, password, pic } = req.body;
@@ -23,7 +24,6 @@ const registerUser = async (req, res) => {
       password,
       pic,
     });
-    
 
     if (user) {
       res.status(201).json({
@@ -81,28 +81,117 @@ const allUsers = asyncHandler(async (req, res) => {
   const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
   // const users = await User.find(keyword);
   res.json(users);
-
 });
 
 // change user picture
 const changeProfile = asyncHandler(async (req, res) => {
   try {
-    const {pic} = req.body;
+    const { pic } = req.body;
     const user = await User.findByIdAndUpdate(
       req.user._id,
       {
         pic,
       },
-      {new: true},
-    )
+      { new: true }
+    );
 
     if (!user) {
       res.send("No user found!");
     }
     res.send(user);
   } catch (error) {
-    res.send("Internal server error: "+error.message);
+    res.send("Internal server error: " + error.message);
   }
 });
 
-module.exports = { registerUser, authUser, allUsers, changeProfile };
+const getNoti = asyncHandler(async (req, res) => {
+  try {
+    let user = await User.findById(req.user._id).populate("notification");
+    user = await Message.populate(user, {
+      path: "notification.sender",
+    });
+
+    user = await Message.populate(user, {
+      path: "notification.chat",
+    });
+
+    user = await Message.populate(user, {
+      path: "notification.chat.users",
+      select: "-password",
+    });
+    if (user) {
+      return res.json(user.notification);
+    }
+    return res.send("nothing");
+  } catch (error) {
+    res.status(400).send("Internal server error!");
+  }
+});
+
+const addNoti = asyncHandler(async (req, res) => {
+  try {
+    const { msgId } = req.body;
+    if (!msgId) {
+      return res.status(400).send("Notification not found!");
+    }
+    const user = await User.findById(req.user._id);
+    if (user.notification.includes(msgId)) {
+      return res.send("This notification is already present!");
+    }
+
+    let added = await User.findByIdAndUpdate(
+      req.user._id,
+      { $push: { notification: msgId } },
+      { new: true }
+    ).populate("notification");
+
+    user = await user.save();
+    
+    added = await Message.populate(added, {
+      path: "notification.sender",
+    });
+
+    added = await Message.populate(added, {
+      path: "notification.chat",
+    });
+
+    if (!added) {
+      return res.status(400).send("User not found!");
+    }
+
+    return res.json(added);
+  } catch (error) {
+    console.error(error); // Log the full error details
+    res.status(500).send("Internal server error!");
+  }
+});
+
+const removeNoti = asyncHandler(async (req, res) => {
+  try {
+    const { msgId } = req.body;
+    const noti = await Message.findById(msgId);
+    const added = await User.findByIdAndUpdate(
+      req.user._id,
+      { $pull: { notification: msgId } },
+      { new: true }
+    );
+
+    if (!added) {
+      res.status(400).send("No notificaiton found!");
+    } else {
+      return res.json(added);
+    }
+  } catch (error) {
+    res.status(400).send("Internal server error!");
+  }
+});
+
+module.exports = {
+  registerUser,
+  authUser,
+  allUsers,
+  changeProfile,
+  addNoti,
+  removeNoti,
+  getNoti,
+};

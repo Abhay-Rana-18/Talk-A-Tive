@@ -21,6 +21,7 @@ import {
   useToast,
   Spinner,
   Badge,
+  CloseButton,
 } from "@chakra-ui/react";
 
 // import Badge from "@mui/material/Badge";
@@ -55,12 +56,11 @@ const SideDrawer = () => {
   } = ChatState();
   const navigate = useNavigate();
 
-  
   useEffect(() => {
     getNotifications();
   }, []);
 
-  const getNotifications = async() => {
+  const getNotifications = async () => {
     try {
       setLoading(true);
       const config = {
@@ -69,27 +69,14 @@ const SideDrawer = () => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const {data}  = await axios.get(
-        `/api/user/notiGet`,
-        config
-      );
+      const { data } = await axios.get(`/api/user/notiGet`, config);
       setLoading(false);
       console.log(data);
       setNotification(data);
-
-    } catch (error) {
-      toast({
-        title: "Error while getting notification!",
-        description: error.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-        position: "bottom",
-      });
-    }
+    } catch (error) {}
   };
 
-  const removeNotification = async(noti) => {
+  const removeNotification = async (noti) => {
     if (!noti) {
       return;
     }
@@ -103,13 +90,12 @@ const SideDrawer = () => {
       };
       const { data } = await axios.put(
         `/api/user/notiRemove`,
-        {msgId: noti._id},
+        { msgId: noti._id },
         config
       );
-
     } catch (error) {
       toast({
-        title: "Error while add notification!",
+        title: "Error while removing notification!",
         description: error.message,
         status: "error",
         duration: 3000,
@@ -117,10 +103,25 @@ const SideDrawer = () => {
         position: "bottom",
       });
     }
-  }
+  };
 
- 
-  
+  const removeAll = async () => {
+    setNotification([]);
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+    
+      const { data } = await axios.put(`/api/user/removeAll`, {}, config);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+    
+  };
 
   const LogOutHandler = () => {
     setSelectedChat("");
@@ -129,6 +130,11 @@ const SideDrawer = () => {
   };
 
   const toast = useToast();
+  const SearchByEnter = (e) => {
+    if (e.key==="Enter") {
+      handleSearch();
+    }
+  }
 
   const handleSearch = async () => {
     if (!search) {
@@ -226,10 +232,17 @@ const SideDrawer = () => {
           <Menu>
             <MenuButton p={1}>
               <BellIcon fontSize="2xl" m={1} />
-              { notification.length>0 && <Badge className="badge">{notification.length}</Badge>}
+              {notification.length > 0 && (
+                <Badge className="badge">{notification.length}</Badge>
+              )}
             </MenuButton>
 
-            <MenuList pl={3}>
+            <MenuList
+              pl={3}
+              height="50vh"
+              overflowY="scroll"
+              width={{ base: "60vw", md: "25vw", lg: "25vw" }}
+            >
               {notification.length == 0 && "no new messages"}
               {notification.map((noti) => (
                 <MenuItem
@@ -245,6 +258,18 @@ const SideDrawer = () => {
                     : `New message from ${getSender(user, noti.chat.users)}`}
                 </MenuItem>
               ))}
+              <Button
+                colorScheme="red"
+                variant="outline"
+                size="sm"
+                className="removeAll"
+                onClick={() => {
+                  removeAll();
+                }}
+              >
+                remove all
+              </Button>
+              {/* <CloseButton /> */}
             </MenuList>
           </Menu>
           <Menu>
@@ -282,7 +307,9 @@ const SideDrawer = () => {
                     setSearch(e.target.value);
                   }}
                 />
-                <Button onKeyDown={handleSearch} onClick={handleSearch}>GO</Button>
+                <Button onKeyDown={SearchByEnter} onClick={handleSearch}>
+                  GO
+                </Button>
               </Box>
 
               {loading ? (
@@ -292,6 +319,7 @@ const SideDrawer = () => {
                   <UserListItem
                     key={usr._id}
                     user={usr}
+
                     handleFunction={() => {
                       accessChat(usr._id);
                       onClose();

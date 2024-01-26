@@ -23,21 +23,22 @@ import msgImage from "../Images/send-message.png";
 import msgAudio from "../Images/msg.mp3";
 
 import animationData from "../Animations/typing.json";
+import notiSound from "../Images/noti.mp3";
 
 // socket.io
 import { io } from "socket.io-client";
 import ProfileModal2 from "./missileneous/ProfileModal2";
 
-const ENDPOINT = "192.168.43.143:3000";
+const ENDPOINT = "192.168.43.143:3000" || "localhost:3000" || "https://talk-a-tive-qnvy.onrender.com";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState();
-
+  
   const { user, selectedChat, setSelectedChat, notification, setNotification } =
-    ChatState();
+  ChatState();
   const toast = useToast();
 
   const [socketConnected, setsocketConnected] = useState(false);
@@ -100,7 +101,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       setIsTyping(false);
     });
   }, []);
-
+  
   useEffect(() => {
     fetchAllMessages();
     selectedChatCompare = selectedChat;
@@ -125,27 +126,35 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         config
       );
     } catch (error) {
-      toast({
-        title: "Error while add notification!",
-        description: error.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-        position: "bottom",
-      });
+      // toast({
+      //   title: "Error while add notification!",
+      //   description: error.message,
+      //   status: "error",
+      //   duration: 3000,
+      //   isClosable: true,
+      //   position: "bottom",
+      // });
     }
   };
 
   useEffect(() => {
+    let audio = new Audio(notiSound);
     const handleNewMessage = (newMessageReceived) => {
       if (
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessageReceived.chat._id
-      ) {
-        // Check if the notification already exists
+        ) {
+          // Check if the notification already exists
         if (!notification.some((msg) => msg._id === newMessageReceived._id)) {
           setNotification([...notification, newMessageReceived]);
           addNotification(newMessageReceived);
+          // notification sound
+          try{
+            audio.play();
+          } catch(error) {
+            console.log("Not played: "+error.msg);
+          }
+
           setFetchAgain(!fetchAgain);
         }
       } else {
@@ -201,7 +210,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const onEnter = (e) => {
     var screenWidth = window.screen.width;
-    if (e.key == "Enter") {
+    if (e.key === "Enter") {
       sendMessage();
     }
   };
@@ -356,7 +365,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               ) : (
                 <></>
               )}
-              <InputGroup>
+              <InputGroup position='sticky'>
                 <Input
                   bg="white"
                   placeholder="Enter a message..."

@@ -1,6 +1,6 @@
 html,
 body {
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 .chatBox {
@@ -8,10 +8,13 @@ body {
     justify-content: space-between;
     flex-direction: row;
     width: 100vw;
-    height: 91vh;
+    height: 92vh;
     padding: 5px;
     background-color: rgb(209, 219, 255);
-    /* background-color: rgb(254, 236, 255); */
+    /* background-color: rgb(239, 239, 239); */
+}
+.chatTitle {
+    font-weight: 500;
 }
 
 .navbar {
@@ -40,6 +43,20 @@ body {
 .chatBg {
     background-image: url("https://s-media-cache-ak0.pinimg.com/originals/cf/14/0d/cf140dac517f37fc801b6b91aaf76fea.png");
     background-size: cover;
+}
+
+.removeAll {
+    position: relative;
+    left: 60%;
+    overflow-x: hidden;
+    font-size: small;
+    border-radius: 20px;
+    margin: 10px;
+}
+@media (max-width: 500px) {
+    .removeAll {
+        left: 45%;
+    }
 }
 
 .time {

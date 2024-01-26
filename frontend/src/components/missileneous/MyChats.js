@@ -9,14 +9,10 @@ import GroupChatModal from "./GroupChatModal";
 import groupLogo from "../../Images/groupChat.png";
 
 const MyChats = ({ fetchAgain, setFetchAgain }) => {
+  const ch = window.screen.width<500 ? 20 : 23;
+  const desc = window.screen.width<500 ? 23 : 30;
   // const [loggedUser, setLoggedUser] = useState();
-  const {
-    selectedChat,
-    setSelectedChat,
-    chat,
-    setChat,
-    user,
-  } = ChatState();
+  const { selectedChat, setSelectedChat, chat, setChat, user } = ChatState();
   const toast = useToast();
 
   const fetchChats = async () => {
@@ -46,8 +42,6 @@ const MyChats = ({ fetchAgain, setFetchAgain }) => {
       });
     }
   };
-
-
 
   useEffect(() => {
     // setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
@@ -117,22 +111,26 @@ const MyChats = ({ fetchAgain, setFetchAgain }) => {
               >
                 {/* {getCount(c)} */}
                 <Avatar
-                  src={
-                    c.isGroupChat
-                      ? c.dp
-                      : getSenderFull(user, c.users).pic
-                  }
+                  src={c.isGroupChat ? c.dp : getSenderFull(user, c.users).pic}
                   size="md"
                   cursor="pointer"
                 />
                 <Box>
-                  <Text marginLeft={3} as="samp">
-                    {!c.isGroupChat
-                      ? getSender(user, c.users)
-                      : c.chatName}
+                  <Text marginLeft={3} className="chatTitle">
+                    {c.isGroupChat
+                      ? c.chatName.length > ch
+                        ? `${c.chatName.substring(0, ch)}...`
+                        : c.chatName
+                      : getSender(user, c.users).length > ch
+                      ? `${getSender(user, c.users).substring(0, ch)}...`
+                      : getSender(user, c.users)}
                   </Text>
+
                   <Text marginLeft={3} fontSize={14} fontFamily="revert">
-                    {c.latestMessage ? c.latestMessage.content : ""}
+                    {c.latestMessage &&
+                      (c.latestMessage.content.length > desc
+                        ? `${c.latestMessage.content.substring(0, desc)}...`
+                        : c.latestMessage.content)}
                   </Text>
                 </Box>
                 {c.latestMessage && (

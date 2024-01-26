@@ -146,7 +146,7 @@ const addNoti = asyncHandler(async (req, res) => {
     ).populate("notification");
 
     user = await user.save();
-    
+
     added = await Message.populate(added, {
       path: "notification.sender",
     });
@@ -186,6 +186,62 @@ const removeNoti = asyncHandler(async (req, res) => {
   }
 });
 
+const removeNotiByUser = asyncHandler(async (req, res) => {
+  try {
+    const { msgId } = req.body;
+
+    // Find the message and populate the sender and chat fields
+    const noti = await Message.findById(msgId).populate("sender chat");
+
+    if (!noti) {
+      return res.status(404).json({ success: false, message: "Message not found." });
+    }
+
+    const { sender, chat } = noti;
+
+    const senderId = sender.toString(); // Extract string ObjectId
+    const chatId = chat.toString(); // Assuming similar issue with chat
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $pull: {
+          notification: { $or: [{ sender: senderId }, { chat: chatId }] }
+        }
+      },
+      { new: true }
+    );
+
+    return res.json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error!");
+  }
+});
+
+
+const removeAllNoti = asyncHandler(async (req, res) => {
+  try {
+    const added = await User.findByIdAndUpdate(
+      req.user._id,
+      { notification: [] },
+      { new: true }
+    );
+
+    if (!added) {
+      res.status(400).send("No notification found!");
+    } else {
+      console.log("Notifications cleared:", added);
+      return res.json(added);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Internal server error!");
+  }
+});
+
+
+
 module.exports = {
   registerUser,
   authUser,
@@ -194,4 +250,6 @@ module.exports = {
   addNoti,
   removeNoti,
   getNoti,
+  removeNotiByUser,
+  removeAllNoti
 };

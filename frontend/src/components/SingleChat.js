@@ -29,7 +29,8 @@ import notiSound from "../Images/noti.mp3";
 import { io } from "socket.io-client";
 import ProfileModal2 from "./missileneous/ProfileModal2";
 
-const ENDPOINT = "192.168.43.143:3000" || "localhost:3000" || "https://talk-a-tive-qnvy.onrender.com";
+// const ENDPOINT = "192.168.43.143:3000" || "localhost:3000" || "https://talk-a-tive-qnvy.onrender.com";
+const ENDPOINT = "https://talk-a-tive-qnvy.onrender.com";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {

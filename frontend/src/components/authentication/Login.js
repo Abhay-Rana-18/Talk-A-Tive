@@ -89,17 +89,6 @@ const Login = () => {
 
   return (
     <VStack spacing="5px">
-      {/* <FormControl>
-        <FormLabel>Name: </FormLabel>
-        <Input
-          placeholder="Enter your name"
-          style={{ border: "1px solid black" }}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-        />
-      </FormControl> */}
-
       <FormControl>
         <FormLabel fontSize="15px">Email: </FormLabel>
         <Input
@@ -146,7 +135,7 @@ const Login = () => {
         Login
       </Button>
 
-      <Button
+      {/* <Button
         size="sm"
         variant="solid"
         colorScheme="red"
@@ -158,7 +147,7 @@ const Login = () => {
         }}
       >
         Login with guest credentials
-      </Button>
+      </Button> */}
     </VStack>
   );
 };

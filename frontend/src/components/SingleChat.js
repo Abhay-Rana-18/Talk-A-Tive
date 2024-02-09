@@ -29,17 +29,20 @@ import notiSound from "../Images/noti.mp3";
 import { io } from "socket.io-client";
 import ProfileModal2 from "./missileneous/ProfileModal2";
 
-// const ENDPOINT = "192.168.43.143:3000" || "localhost:3000" || "https://talk-a-tive-qnvy.onrender.com";
-const ENDPOINT = "https://talk-a-tive-qnvy.onrender.com";
+const ENDPOINT =
+  "192.168.43.143:3000" ||
+  "localhost:3000" ||
+  "https://talk-a-tive-qnvy.onrender.com";
+// const ENDPOINT = "https://talk-a-tive-qnvy.onrender.com";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState();
-  
-  const { user, selectedChat, setSelectedChat, notification, setNotification } =
-  ChatState();
+
+  const { user, selectedChat, setSelectedChat, notification, setNotification, setChat, chat } =
+    ChatState();
   const toast = useToast();
 
   const [socketConnected, setsocketConnected] = useState(false);
@@ -54,6 +57,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
+
 
   const fetchAllMessages = async () => {
     if (!selectedChat) {
@@ -88,6 +92,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
+
   // useEffect for socket.io
   useEffect(() => {
     socket = io(ENDPOINT);
@@ -102,7 +107,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       setIsTyping(false);
     });
   }, []);
-  
+
+ 
   useEffect(() => {
     fetchAllMessages();
     selectedChatCompare = selectedChat;
@@ -114,7 +120,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
 
     try {
-      console.log(noti);
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -139,21 +144,35 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   useEffect(() => {
-    let audio = new Audio(notiSound);
     const handleNewMessage = (newMessageReceived) => {
       if (
         !selectedChatCompare ||
         selectedChatCompare._id !== newMessageReceived.chat._id
-        ) {
-          // Check if the notification already exists
+      ) {
+        // Check if the notification already exists
         if (!notification.some((msg) => msg._id === newMessageReceived._id)) {
           setNotification([...notification, newMessageReceived]);
           addNotification(newMessageReceived);
+
+          if ("Notification" in window) {
+            Notification.requestPermission().then((permission) => {
+              if (permission === "granted") {
+                const myNoti = new Notification(
+                  `New message from ${newMessageReceived.sender.name}`,
+                  {
+                    body: newMessageReceived.content,
+                  }
+                );
+              }
+            });
+          }
+
           // notification sound
-          try{
+          try {
+            let audio = new Audio(notiSound);
             audio.play();
-          } catch(error) {
-            console.log("Not played: "+error.msg);
+          } catch (error) {
+            console.log("Not played: " + error.msg);
           }
 
           setFetchAgain(!fetchAgain);
@@ -210,7 +229,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   const onEnter = (e) => {
-    var screenWidth = window.screen.width;
     if (e.key === "Enter") {
       sendMessage();
     }
@@ -229,6 +247,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     if (newMessage) {
       socket.emit("stop typping", selectedChat._id);
       try {
+        
         setNewMessage("");
         const config = {
           headers: {
@@ -269,8 +288,28 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
+  // useEffect(() => {
+  //   setChat(chat);
+  // }, [sendMessage]);
+
+
+  const [typingMessage, setTypingMessage] = useState('');
+  useEffect(() => {
+
+    // Listen for "whatType" event
+    socket.on('whatType', (msg) => {
+      // Update typing message state
+      setTypingMessage(msg);
+      console.log("Typing");
+      console.log(typingMessage);
+    });
+
+  
+  }, []); // Empty dependency array ensures the effect runs only once
+
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
+    socket.emit("type", e.target.value);
 
     // Typing indicator logic
     if (!socketConnected) return;
@@ -280,7 +319,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       socket.emit("typing", selectedChat._id);
     }
     let lastTypingTIme = new Date().getTime();
-    var timerLength = 3000;
+    var timerLength = 2000;
     setTimeout(() => {
       var timeNow = new Date().getTime();
       var timeDiff = timeNow - lastTypingTIme;
@@ -366,7 +405,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               ) : (
                 <></>
               )}
-              <InputGroup position='sticky'>
+              <InputGroup>
                 <Input
                   bg="white"
                   placeholder="Enter a message..."

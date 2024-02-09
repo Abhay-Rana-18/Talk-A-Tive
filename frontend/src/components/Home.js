@@ -25,7 +25,7 @@ const Home = () => {
   }, [navigate]);
 
   return (
-    <div>
+    <div style={{overflowY: 'scroll'}}>
       <Container maxW="xl" centerContent >
         <Box
           d="flex"

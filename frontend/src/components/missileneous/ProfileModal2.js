@@ -17,8 +17,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 
-const ProfileModal2 = ({ user, setUser, children }) => {
-  const [pic, setPic] = useState(user.pic);
+const ProfileModal2 = ({ user, children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -56,7 +55,7 @@ const ProfileModal2 = ({ user, setUser, children }) => {
             <Image
               borderRadius="full"
               boxSize="150px"
-              src={pic}
+              src={user.pic}
               alt={user.name}
             />
             <Text

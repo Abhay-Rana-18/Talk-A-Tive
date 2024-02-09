@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ChatState } from "../context/ChatProvider";
 import SideDrawer from "./missileneous/SideDrawer";
 import MyChats from "./missileneous/MyChats";
@@ -9,8 +9,9 @@ import { useState } from "react";
 const ChatPage = () => {
   const { user } = ChatState();
   const [fetchAgain, setFetchAgain] = useState(false);
+  var hgt = window.innerHeight;
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%", height: hgt, position: "fixed", top:'0px', overflowY: 'hidden'}}>
       {user && <SideDrawer />}
 
       <Box className="chatBox">

@@ -5,8 +5,7 @@ const dotenv = require("dotenv").config();
 const connectDB = require("./config/db");
 const app = express();
 const port = 5000;
-const cors = require('cors');
-
+const cors = require("cors");
 
 const userRoutes = require("./Routes/userRoutes");
 const chatRoutes = require("./Routes/chatRoutes");
@@ -30,14 +29,14 @@ app.use("/api/message/", messageRoutes);
 // -------------------------------DEPLOYMENT----------------------------------
 const __dirname1 = path.resolve();
 if (process.env.NODE_ENV == "production") {
-    app.use(express.static(path.join(__dirname1, "/frontend/build")));
-    app.get("*", (req, res) => {
-        res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"));
-    });
+  app.use(express.static(path.join(__dirname1, "/frontend/build")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"));
+  });
 } else {
-    app.get("/", (req, res) => {
-        res.send("API is running succesfully!");
-    });
+  app.get("/", (req, res) => {
+    res.send("API is running succesfully!");
+  });
 }
 // -------------------------------DEPLOYMENT----------------------------------
 
@@ -46,7 +45,7 @@ app.use(notFound);
 app.use(errorHandler);
 
 const server = app.listen(port, () => {
-    console.log(`App sucessfully started at port ${port}`.blue.bold);
+  console.log(`App sucessfully started at port ${port}`.blue.bold);
 });
 
 // app.use(cors({ origin: ['localhost:3000', '192.168.43.143:3000'] }));
@@ -78,6 +77,12 @@ io.on("connection", (socket) => {
 
   socket.on("typing", (room) => socket.in(room).emit("typing"));
   socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
+
+  // new feature
+
+  socket.on("type", (msg) => {
+    socket.in(user._id).emit("whatType", msg);
+  });
 
   socket.on("new message", (msg) => {
     var chat = msg.chat;

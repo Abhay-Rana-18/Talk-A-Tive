@@ -1,6 +1,6 @@
 html,
 body {
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 .chatBox {

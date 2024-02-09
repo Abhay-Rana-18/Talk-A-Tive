@@ -13,9 +13,11 @@ const ChatBox = ({fetchAgain, setFetchAgain}) => {
       height={{base: "100%", md: "100%", lg: "100%"}}
       p={{base: 2, md: 3, lg: 3}}
       bg='white'
-      w={{base: '100%', md: "68%"}}
+      w={{base: '100%', md: "66.8%"}}
       borderRadius='lg'
       borderWidth='1px'
+      position={{base: 'absolute', md: 'static', lg: 'static'}}
+      top={{base: 0}}
     >
       <SingleChat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
     </Box>

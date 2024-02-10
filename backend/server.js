@@ -54,9 +54,9 @@ const io = new Server(server, {
   pingTimeout: 60000,
   cors: {
     origin: [
-      "localhost:3000",
-      "192.168.43.143:3000",
-      "talk-a-tive-qnvy.onrender.com",
+      // "localhost:3000",
+      // "192.168.43.143:3000",
+      "talk-a-tive-qnvy.onrender.com"
     ],
   },
 });

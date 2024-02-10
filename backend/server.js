@@ -80,22 +80,22 @@ io.on("connection", (socket) => {
 
   // new feature
 
-  socket.on("type", (msg, user) => {
-    socket.in(user._id).emit("whatType", msg);
-  });
+  // socket.on("type", (msg, user) => {
+  //   socket.in(user._id).emit("whatType", msg);
+  // });
 
-  socket.on("new message", (msg) => {
-    var chat = msg.chat;
-    if (!chat.users) {
-      return console.log("Chat users not defined.");
-    }
+  // socket.on("new message", (msg) => {
+  //   var chat = msg.chat;
+  //   if (!chat.users) {
+  //     return console.log("Chat users not defined.");
+  //   }
 
-    chat.users.forEach((user) => {
-      if (user._id == msg.sender._id) return;
+  //   chat.users.forEach((user) => {
+  //     if (user._id == msg.sender._id) return;
 
-      socket.in(user._id).emit("message received", msg);
-    });
-  });
+  //     socket.in(user._id).emit("message received", msg);
+  //   });
+  // });
 
   socket.off("setup", () => {
     console.log("USER disconnected!");

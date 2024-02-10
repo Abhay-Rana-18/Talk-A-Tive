@@ -11,7 +11,7 @@ const ChatBox = ({fetchAgain, setFetchAgain}) => {
       alignItems='center'
       flexDir='column'
       height={{base: "100%", md: "100%", lg: "100%"}}
-      p={{base: 2, md: 3, lg: 3}}
+      p={{base: 3, md: 3, lg: 3}}
       bg='white'
       w={{base: '100%', md: "66.8%"}}
       borderRadius='lg'

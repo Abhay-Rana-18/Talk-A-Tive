@@ -11,7 +11,7 @@ const ChatPage = () => {
   const [fetchAgain, setFetchAgain] = useState(false);
   var hgt = window.innerHeight;
   return (
-    <div style={{ width: "100%", height: hgt, position: "fixed", top:'0px', overflowY: 'hidden'}}>
+    <div style={{ width: "100%", height: hgt, position: "fixed", top:'0px', left: '0px', overflow: 'hidden'}}>
       {user && <SideDrawer />}
 
       <Box className="chatBox">

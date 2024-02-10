@@ -54,8 +54,8 @@ const io = new Server(server, {
   pingTimeout: 60000,
   cors: {
     origin: [
-      // "localhost:3000",
-      // "192.168.43.143:3000",
+      "localhost:3000",
+      "192.168.43.143:3000",
       "talk-a-tive-qnvy.onrender.com"
     ],
   },
@@ -84,18 +84,18 @@ io.on("connection", (socket) => {
   //   socket.in(user._id).emit("whatType", msg);
   // });
 
-  // socket.on("new message", (msg) => {
-  //   var chat = msg.chat;
-  //   if (!chat.users) {
-  //     return console.log("Chat users not defined.");
-  //   }
+  socket.on("new message", (msg) => {
+    var chat = msg.chat;
+    if (!chat.users) {
+      return console.log("Chat users not defined.");
+    }
 
-  //   chat.users.forEach((user) => {
-  //     if (user._id == msg.sender._id) return;
+    chat.users.forEach((user) => {
+      if (user._id == msg.sender._id) return;
 
-  //     socket.in(user._id).emit("message received", msg);
-  //   });
-  // });
+      socket.in(user._id).emit("message received", msg);
+    });
+  });
 
   socket.off("setup", () => {
     console.log("USER disconnected!");

@@ -293,19 +293,19 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   // }, [sendMessage]);
 
 
-  const [typingMessage, setTypingMessage] = useState('');
-  useEffect(() => {
+  // const [typingMessage, setTypingMessage] = useState('');
+  // useEffect(() => {
 
-    // Listen for "whatType" event
-    socket.on('whatType', (msg) => {
-      // Update typing message state
-      setTypingMessage(msg);
-      console.log("Typing");
-      console.log(typingMessage);
-    });
+  //   // Listen for "whatType" event
+  //   socket.on('whatType', (msg, user) => {
+  //     // Update typing message state
+  //     setTypingMessage(msg);
+  //     console.log("Typing");
+  //     console.log(typingMessage);
+  //   });
 
   
-  }, []); // Empty dependency array ensures the effect runs only once
+  // }, []); // Empty dependency array ensures the effect runs only once
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);

@@ -80,7 +80,7 @@ io.on("connection", (socket) => {
 
   // new feature
 
-  socket.on("type", (msg) => {
+  socket.on("type", (msg, user) => {
     socket.in(user._id).emit("whatType", msg);
   });
 
